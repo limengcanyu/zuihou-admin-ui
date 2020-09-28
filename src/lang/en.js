@@ -112,6 +112,15 @@ export default {
       system: 'System',
       browser: 'Browser'
     },
+    datasourceConfig: {
+      id: 'ID',
+      name: 'name',
+      poolName: 'poolName',
+      username: 'username',
+      password: 'password',
+      url: 'url',
+      driverClassName: 'driverClassName'
+    },
     gen: {
       config: {
         author: 'Author',
@@ -170,7 +179,7 @@ export default {
     sidebarLogo: 'Sidebar Logo'
   },
   system: {
-    title: 'zuihou-admin-ui System'
+    title: 'zuihou-admin-cloud'
   },
   tips: {
     systemError: 'System maintenance, please try again~',
@@ -236,7 +245,7 @@ export default {
   common: {
     system: 'Dev&Operate Microservice SaaS System',
     desc: {
-      a: 'Based on SpringBoot 2.2.5 & SpringCloud Hoxton.SR1',
+      a: 'Based on SpringBoot 2.2.9 & SpringCloud Hoxton.SR7',
       b: 'Use Spring Cloud OAuth2 Unified Authentication',
       c: 'Enterprise design and configuration, deny demo project',
       d: 'Front-end separation architecture for increased efficiency',

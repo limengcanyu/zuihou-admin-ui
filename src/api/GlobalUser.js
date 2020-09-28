@@ -2,36 +2,40 @@ import axiosApi from './AxiosApi.js'
 
 const apiList = {
   page: {
-    url: `/authority/globalUser/page`,
+    url: `/tenant/globalUser/page`,
     method: 'POST'
   },
   save: {
     method: 'POST',
-    url: `/authority/globalUser`
+    url: `/tenant/globalUser`
   },
   update: {
     method: 'PUT',
-    url: `/authority/globalUser`
+    url: `/tenant/globalUser`
   },
   remove: {
     method: 'DELETE',
-    url: `/authority/globalUser/delete`
+    url: `/tenant/globalUser/delete`
   },
   check: {
     method: 'GET',
-    url: `/authority/globalUser/check`
+    url: `/tenant/globalUser/check`
   },
   preview: {
     method: 'POST',
-    url: `/authority/globalUser/preview`
+    url: `/tenant/globalUser/preview`
   },
   export: {
     method: 'POST',
-    url: `/authority/globalUser/export`
+    url: `/tenant/globalUser/export`
   },
   import: {
     method: 'POST',
-    url: `/authority/globalUser/import`
+    url: `/tenant/globalUser/import`
+  },
+  reset: {
+    method: 'PUT',
+    url: `/tenant/globalUser/reset`
   }
 }
 
@@ -77,6 +81,12 @@ export default {
     return axiosApi({
       ...apiList.export,
       responseType: "blob",
+      data
+    })
+  },
+  reset (data) {
+    return axiosApi({
+      ...apiList.reset,
       data
     })
   },

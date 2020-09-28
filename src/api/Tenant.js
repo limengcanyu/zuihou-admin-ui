@@ -3,39 +3,47 @@ import axiosApi from './AxiosApi.js'
 const apiList = {
   page: {
     method: 'POST',
-    url: `/authority/tenant/page`
+    url: `/tenant/tenant/page`
   },
   update: {
     method: 'PUT',
-    url: `/authority/tenant`
+    url: `/tenant/tenant`
   },
   save: {
     method: 'POST',
-    url: `/authority/tenant`
+    url: `/tenant/tenant`
   },
   saveInit: {
     method: 'POST',
-    url: `/authority/tenant/init`
+    url: `/tenant/tenant/init`
+  },
+  updateStatus: {
+    method: 'POST',
+    url: `/tenant/tenant/status`
   },
   remove: {
     method: 'DELETE',
-    url: `/authority/tenant`
+    url: `/tenant/tenant`
   },
   list: {
     method: 'POST',
-    url: `/authority/tenant/query`
+    url: `/tenant/tenant/query`
   },
   preview: {
     method: 'POST',
-    url: `/authority/tenant/preview`
+    url: `/tenant/tenant/preview`
   },
   export: {
     method: 'POST',
-    url: `/authority/tenant/export`
+    url: `/tenant/tenant/export`
   },
   import: {
     method: 'POST',
-    url: `/authority/tenant/import`
+    url: `/tenant/tenant/import`
+  },
+  initConnect: {
+    method: 'POST',
+    url: `/tenant/tenant/initConnect`
   }
 }
 
@@ -65,6 +73,13 @@ export default {
       data
     })
   },
+  updateStatus (data) {
+    return axiosApi({
+      ...apiList.updateStatus,
+      formData: true,
+      data
+    })
+  },
   remove (data) {
     return axiosApi({
       ...apiList.remove,
@@ -80,7 +95,7 @@ export default {
   check (code) {
     return axiosApi({
       method: 'GET',
-      url: `/authority/tenant/check/${code}`
+      url: `/tenant/tenant/check/${code}`
     })
   },
   preview (data) {
@@ -99,6 +114,12 @@ export default {
   import (data) {
     return axiosApi({
       ...apiList.import,
+      data
+    })
+  },
+  initConnect (data) {
+    return axiosApi({
+      ...apiList.initConnect,
       data
     })
   }

@@ -112,6 +112,15 @@ export default {
       system: '登录系统',
       browser: '浏览器'
     },
+    datasourceConfig: {
+      id: 'ID',
+      name: '名称',
+      poolName: '数据源名',
+      username: '账号',
+      password: '密码',
+      url: '链接',
+      driverClassName: '驱动'
+    },
     gen: {
       config: {
         author: '作者名称',
@@ -170,7 +179,7 @@ export default {
     sidebarLogo: '侧边栏 Logo'
   },
   system: {
-    title: 'zuihou-admin'
+    title: 'zuihou-admin-cloud'
   },
   tips: {
     systemError: '系统维护中，请稍微再试~',
@@ -236,7 +245,7 @@ export default {
   common: {
     system: '开发&运营后台',
     desc: {
-      a: '基于 SpringBoot 2.2.5 & SpringCloud Hoxton.SR1',
+      a: '基于 SpringBoot 2.2.9 & SpringCloud Hoxton.SR7',
       b: '使用Jwt自定义统一认证',
       c: '企业级设计和配置，拒绝demo项目',
       d: '前后端分离架构，提高软件开发效率',

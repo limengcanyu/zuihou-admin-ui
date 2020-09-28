@@ -1,16 +1,18 @@
 <template>
   <div class="app-container">
+    <aside> 2.5.1 版本，将租户服务和权限服务分离后，为了让租户服务职责简单，租户服务启动和运行时没有动态初始化租户库的数据源了，所以不能查看其他租户的用户数据了。
+      可以使用初始化租户时，内置的超级管理员账号登录zuihou-ui系统查看</aside>
     <div class="filter-container">
-      <el-select
-        v-model="queryParams.model.tenantCode"
-        clearable
-        :placeholder="$t('table.globalUser.tenantCode')"
-        @change="codeChange"
-        class="filter-item search-item"
-      >
-        <el-option key="1" label="超管" value="admin" />
-        <el-option v-for="(item, key, index) in tenantList" :key="index" :label="item.name" :value="item.code" />
-      </el-select>
+      <!--      <el-select-->
+      <!--        v-model="queryParams.model.tenantCode"-->
+      <!--        clearable-->
+      <!--        :placeholder="$t('table.globalUser.tenantCode')"-->
+      <!--        class="filter-item search-item"-->
+      <!--        @change="codeChange"-->
+      <!--      >-->
+      <!--        <el-option key="1" label="超管" value="admin" />-->
+      <!--        <el-option v-for="(item, key, index) in tenantList" :key="index" :label="item.name" :value="item.code" />-->
+      <!--      </el-select>-->
       <el-input v-model="queryParams.model.account" :placeholder="$t('table.globalUser.account')" class="filter-item search-item" />
       <el-input v-model="queryParams.model.name" :placeholder="$t('table.globalUser.name')" class="filter-item search-item" />
       <el-date-picker
@@ -54,7 +56,7 @@
       @sort-change="sortChange"
       @cell-click="cellClick"
     >
-      <el-table-column align="center" type="selection" width="40px" :reserve-selection="true" />
+      <el-table-column align="center" type="selection" width="40px" column-key="selectionId" :reserve-selection="true" />
       <el-table-column :label="$t('table.globalUser.account')" :show-overflow-tooltip="true" class-name="status-col" prop="account">
         <template slot-scope="scope">
           <span>{{ scope.row.account }}</span>
@@ -89,11 +91,23 @@
         <template slot-scope="{row}">
           <i class="el-icon-edit table-operation" style="color: #2db7f5;" @click="edit(row)" />
           <i class="el-icon-delete table-operation" style="color: #f50;" @click="singleDelete(row)" />
+          <i
+            class="el-icon-refresh-left"
+            style="color: #f50;"
+            @click="updatePassword(row)"
+          />
         </template>
       </el-table-column>
     </el-table>
     <pagination v-show="tableData.total>0" :limit.sync="queryParams.size" :page.sync="queryParams.current" :total="Number(tableData.total)" @pagination="fetch" />
     <global-user-edit ref="edit" :dialog-visible="dialog.isVisible" :title="dialog.title" @close="editClose" @success="editSuccess" />
+    <update-password
+      ref="updatePassword"
+      :dialog-visible="updatePasswordDialog.isVisible"
+      :type="updatePasswordDialog.type"
+      @close="updatePasswordClose"
+      @success="updatePasswordSuccess"
+    />
     <el-dialog
       v-el-drag-dialog
       :close-on-click-modal="false"
@@ -115,18 +129,23 @@ import Pagination from '@/components/Pagination'
 import GlobalUserEdit from './Edit'
 import globalUserApi from '@/api/GlobalUser.js'
 import tenantApi from '@/api/Tenant.js'
+import UpdatePassword from "./UpdatePassword"
 import elDragDialog from '@/directive/el-drag-dialog'
 import { downloadFile, initQueryParams } from '@/utils/commons'
 
 export default {
   name: 'GlobalUserManage',
   directives: { elDragDialog },
-  components: { Pagination, GlobalUserEdit },
+  components: { Pagination, GlobalUserEdit, UpdatePassword },
   data () {
     return {
       dialog: {
         isVisible: false,
         title: ''
+      },
+      updatePasswordDialog: {
+        isVisible: false,
+        type: "add"
       },
       preview: {
         isVisible: false,
@@ -157,7 +176,7 @@ export default {
   },
   methods: {
     loadTenantList () {
-      tenantApi.list().then(response => {
+      tenantApi.list({ status: 'NORMAL' }).then(response => {
         const res = response.data
         if (res.isSuccess) {
           this.tenantList = res.data
@@ -169,6 +188,12 @@ export default {
     },
     editSuccess () {
       this.search()
+    },
+    updatePasswordSuccess () {
+      this.search()
+    },
+    updatePasswordClose () {
+      this.updatePasswordDialog.isVisible = false
     },
     onSelectChange (selection) {
       this.selection = selection
@@ -292,10 +317,17 @@ export default {
         })
         return
       }
+      row.tenantCode = this.queryParams.model.tenantCode
       this.$refs.edit.setGlobalUser(row)
       this.$refs.edit.type = 'edit'
       this.dialog.title = this.$t('common.edit')
       this.dialog.isVisible = true
+    },
+    updatePassword (row) {
+      row.tenantCode = this.queryParams.model.tenantCode
+      this.$refs.updatePassword.setUser(row)
+      this.updatePasswordDialog.type = "edit"
+      this.updatePasswordDialog.isVisible = true
     },
     fetch (params = {}) {
       this.loading = true
@@ -340,7 +372,7 @@ export default {
       this.search()
     },
     cellClick (row, column) {
-      if (column['columnKey'] === "operation") {
+      if (column['columnKey'] !== "selectionId") {
         return
       }
       let flag = false
